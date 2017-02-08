@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Invoice</title>
+        <style type="text/css">
+
+            * {
+                font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+                font-size:13px;
+            }
+            tr{
+                height:10px;
+            }
+
+            td{
+                padding-left: 6px;
+                height: 10px;
+            }
+            td.btop{ border-top:1px solid #000; }
+            td.bleft{ border-left:1px solid #000; padding-left: 6px;}
+            td.bright{ border-right:1px solid #000; }
+            td.bbottom{ border-bottom:1px solid #000; }
+            td.ltext{ text-align: left }
+        </style>
+    </head>
+    <body style="height:1000px;">
+        <div id="map" style="width:1000px;height:100px;">
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" >
+                <tr>
+                    <td width="33%">&nbsp</td>
+                    <td colspan="2" width="67%"><div style="padding-left: 230px">Seria {{SERIA_LETTER}} nr. {{seria_num}}</div></td>
+                </tr>
+                <tr>
+                    <td valign="top">
+                        Furnizor: <br />
+                        {{SenderName}}<br />
+                        Nr. ord.registru com./an: {{Nr}}<br />
+                        C.I.F.: {{Cif}} <br />
+                        Capital social: {{CapSoc}}<br />
+                        Sediul: {{Sediu}}<br />
+                        Punct de lucru.: {{SenderAddress}}, {{SenderCity}}<br />
+                        cod postal.: {{CodPostal}}<br />
+                        Cont: {{Cont}}<br />
+                        Banca: {{Banca}}<br />
+                        web: {{Web}}<br />
+                        e-mail: {{Email}} <br />
+                        tel: {{SenderPhone}}
+                    </td>
+                    <td width="190px"> &nbsp; </td>
+                    <td valign="top">
+                        Cumparator(denumire, forma juridica):<br />
+                        {{ product_return.name }} <br />
+                        Sediul:{{ product_return.address}}<br />         
+                        Cont bancar: {{ product_return.bank_account }}<br/>
+                        Titularul contului: {{ product_return.owner_name }}<br/>
+                        Numele bancii: {{ product_return.bank_name }}<br/>
+                    </td>
+                </tr>
+            </table>
+            <h1 style="text-align: center; font-size: 22px; font-weight: bold"> Factura </h1>
+            <p>
+                Nr. Factura: {{product_return.invoice.seria}}<br />
+                Data(Z,L,A): {{product_return.created_at}}<br />
+                Nr. aviz insotire marfii: - <br />
+                Cota T.V.A.: {{product_return.invoice.order.vat}}%
+            </p>
+            <table cellpadding="0" cellspacing="0" width="100%" style="border-spacing: 0px; margin: 0px; padding: 0px;">
+                <tr style="text-align: center;">
+                    <td class="btop bbottom bleft bright" style="width: 40px; text-align: center;">Nr.Ctr.</td>
+                    <td class="btop bbottom ltext bright" style="width: 465px;">Denumirea produselor sau a serviciilor</td>
+                    <td class="btop bbottom ltext bright" style="width: 35px;">U.M.</td>
+                    <td class="btop bbottom ltext bright" style="width: 70px;">Cantitatea</td>     
+                    <td class="btop bbottom ltext bright" style="width: 65px;">Valoarea<br /> -RON-</td>
+                </tr>
+                <tr>
+                    <td class="bleft bright bbottom" style="text-align:center; width: 40px;"> 0</td>
+                    <td class="bbottom bright" style="width: 465px;">1</td>
+                    <td class="bbottom bright" style="width: 35px;">2</td>
+                    <td class="bbottom bright" style="width: 70px;">3</td>
+                    <td class="bbottom bright" style="width: 65px;">4</td>
+                </tr>
+
+                <!-- START BLOCK : PRODUCT -->
+                {% set i = 0 %}
+                {% for product in products %}
+                {% set i = i + 1 %}   
+                <tr>   
+                    <td class="bleft bright " style="text-align:center; width: 40px; height: 15px;"> {{i}} </td>
+                    <td class=" bright" style="width: 465px;"> {{ product.title }} </td>
+                    <td class=" bright" style="width: 35px;"> buc </td>
+                    <td class=" bright" style="width: 70px;"> {{ product.qty }}  </td>
+                    <td class=" bright" style="width: 65px;"> 
+                        {% if product.discount == 0 %} 
+                        {{ product.price }}
+                        {% else %}
+                        {{ product.discount }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}             
+            </table>           
+        </div>
+    </body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice</title>
+  <style type="text/css">
+
+  * {
+    font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+    font-size:13px;
+  }
+  tr{
+    height:10px;
+  }
+  
+  td{
+    padding-left: 6px;
+    height: 10px;
+  }
+  td.btop{ border-top:1px solid #000; }
+  td.bleft{ border-left:1px solid #000; padding-left: 6px;}
+  td.bright{ border-right:1px solid #000; }
+  td.bbottom{ border-bottom:1px solid #000; }
+  td.ltext{ text-align: left }
+  </style>
+</head>
+<body style="height:1000px;">
+   <div id="map" style="width:1000px;height:100px;">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" >
+    <tr>
+      <td width="33%">&nbsp</td>
+      <td colspan="2" width="67%"><div style="padding-left: 230px">Seria {{SERIA_LETTER }} nr. {{seria_num}}</div></td>
+    </tr>
+    <tr>
+      <td valign="top">
+        Furnizor: <br />
+        {{SenderName}}<br />
+        Nr. ord.registru com./an: {{Nr}}<br />
+        C.I.F.: {{Cif}} <br />
+        Capital social: {{CapSoc}}<br />
+        Sediul: {{Sediu}}<br />
+        Punct de lucru.: {{SenderAddress}}, {{SenderCity}}<br />
+        cod postal.: {{CodPostal}}<br />
+        Cont: {{Cont}}<br />
+        Banca: {{Banca}}<br />
+        web: {{Web}}<br />
+        e-mail: {{Email}} <br />
+        tel: {{SenderPhone}}
+      </td>
+      <td width="190px"> &nbsp; </td>
+      <td valign="top">
+          Cumparator(denumire, forma juridica):<br />
+          {{ denumire }}:{{ order.firstname }} {{ order.lastname }} {{ order.name_society}} <br />
+
+          Sediul: {% if order.f_address != '' %} {{ order.f_address }} {% endif %} {% if order.f_address == '' %} {{ order.address }} {% endif %}<br />
+          Localitatea:{% if order.f_town  != '' %}  {{ order.f_town }} {% endif %} {% if order.f_town == '' %} {{ order.town }}{% endif %}<br />
+          Judetul/Sectorul: {% if order.f_county != '' %}  {{ order.f_county }} {% endif %} {% if order.f_county == '' %} {{ order.county }}{% endif %}<br />
+          {{client_abreviere}} : {{ order.pin }}{{ order.cif }} <br />
+          {{ nr_cont_banca }}<br/>
+          {{ cont }}<br/>
+          {{ banc }}<br/>
+      </td>
+    </tr>
+  </table>
+  <image  style="margin-left:90mm;margin-bottom: -5mm"   height="60mm" src="{{url('themes/sportmaniac/assets/img/logo-dark.png')}}">     
+  <h1 style="text-align: center; font-size: 22px; font-weight: bold"> Factura {% if type=='storno' %}({{type}}){%endif%}</h1>
+  <p>
+    Nr. Factura: {{seria_num}}<br />
+    Data(Z,L,A): {{invocedate}}<br />
+    Nr. aviz insotire marfii: - <br />
+    Cota T.V.A.: {{order.vat}}%
+  </p>
+  <table cellpadding="0" cellspacing="0" width="100%" style="border-spacing: 0px; margin: 0px; padding: 0px;">
+    <tr style="text-align: center;">
+      <td class="btop bbottom bleft bright" style="width: 40px; text-align: center;">Nr.Ctr.</td>
+      <td class="btop bbottom ltext bright" style="width: 465px;">Denumirea produselor sau a serviciilor</td>
+      <td class="btop bbottom ltext bright" style="width: 35px;">U.M.</td>
+      <td class="btop bbottom ltext bright" style="width: 70px;">Cantitatea</td>
+      <td class="btop bbottom ltext bright" style="width: 95px;">Pret unitar<br/>(Fara  T.V.A.)<br /> -RON-</td>
+      <td class="btop bbottom ltext bright" style="width: 65px;">Valoarea<br /> -RON-</td>
+      <td class="btop bbottom bright ltext" style="width: 75px;">Valoarea  T.V.A.<br /> -RON-</td>
+    </tr>
+    <tr>
+      <td class="bleft bright bbottom" style="text-align:center; width: 40px;"> 0</td>
+      <td class="bbottom bright" style="width: 465px;">1</td>
+      <td class="bbottom bright" style="width: 35px;">2</td>
+      <td class="bbottom bright" style="width: 70px;">3</td>
+      <td class="bbottom bright" style="width: 95px;">4</td>
+      <td class="bbottom bright" style="width: 65px;">5(3x4)</td>
+      <td class="bright bbottom" style="width: 75px;">6(5x{{order.vat}}%)</td>
+    </tr>
+    
+    <!-- START BLOCK : PRODUCT -->
+    {% set i = 0 %}
+    {% for invoice in invoicerows %}
+    {% set i = i + 1 %}   
+    <tr>   
+      <td class="bleft bright " style="text-align:center; width: 40px; height: 15px;"> {{i}} </td>
+      <td class=" bright" style="width: 465px;"> {{ invoice.prname }} </td>
+      <td class=" bright" style="width: 35px;"> buc </td>
+      <td class=" bright" style="width: 70px;"> {{ invoice.qty }}  </td>
+      <td class=" bright" style="width: 95px;"> {{ invoice.pret|round(2, 'floor')}}  </td>
+      <td class=" bright" style="width: 65px;"> {{ invoice.valoare|round(2, 'floor') }} </td>
+      <td class="bright" style="width: 75px;">  {{ invoice.valoaretva |round(2, 'floor') }}  </td>
+    </tr>
+    {% endfor %}
+    <!-- END BLOCK : PRODUCT -->
+    <tr>
+      <td class="bleft bright" style="width: 40px; height:{{height}}px">&nbsp;</td>
+      <td class="bright" style="width: 465px;">&nbsp;</td>
+      <td class="bright" style="width: 35px;">&nbsp;</td>
+      <td class="bright" style="width: 70px;">&nbsp;</td>
+      <td class="bright" style="width: 95px;">&nbsp;</td>
+      <td class="bright" style="width: 65px;">&nbsp;</td>
+      <td class="bright" style="width: 75px;">&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td colspan="4" class="btop bleft bbottom bright" style="vertical-align: bottom;">
+        <table cellpadding="0" cellspacing="0" width="100%" style="border-spacing: 0px; height: 100% " >  
+          <tr>
+            <td valign="top" height="" width="25%" class="bright">
+              <p style="margin: 5px;">
+                Emis de {{ManagerName}}, Cnp: {{ManagerCnp}},<br/>CI: {{ManagerCi}}
+              </p>
+              <p style="margin: 0px 5px;">
+                  Semnatura si<br>stampila<br> furnizorului
+              </p>
+            </td>
+            <td valign="top" width="100%">
+              <p style="margin: 5px 0px;">
+                TVA la incasarea facturii</br>
+                <!--Termen de garantie: 100 zile<br/>-->
+                Plata: {{plata_nume}}
+              </p>
+              Date privind expeditia: <br /> 
+              <br />
+              <!--1. Numele delegatului: {{numele_delegatului}} <br />-->
+              1. Numele delegatului: Curierat rapid <br />
+              2. Seria nr.: <br />
+              3. Eliberat de: <br />
+              4. B.I./C.I. seria....nr.:........ eliberat(a):..........<br/>
+              5. Mijlocul de transport..........nr. ...........<br/>
+              6. Expedierea s-a efectuat in prezenta noastra la<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;data...............ora...............<br/>					
+              7. Semnaturile..........................
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td colspan="3" class="btop bbottom bright" style="margin: 0px; padding:0px; vertical-align: top;">
+        <table cellpadding="0" cellspacing="0" width="100%" style="border-spacing: 0px; margin: 0px; padding:0px; height: 100%" >
+          <tr>
+            <td class="" width="40%">Total</td>
+            <td class="" width="30%" style='text-align: left;' >{{valoare_total}}</td>
+            <td width="30%" style='text-align: left;'>{{valoare_tva}}</td>
+          </tr>
+          <tr>
+            <td width="125px" class="">din care</td>
+            <td ></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td width="125px" class=" ">accize:</td>
+            <td ></td>
+            <td class="" ><b>X</b></td>
+          </tr>
+          <tr>
+            <td colspan=3 class="bbottom"></td>
+          </tr>
+          <tr>
+            <td style="border-bottom:0" class="">
+              <div style="padding: 5px 0 0 5px;">
+                Semnatura de primire
+              </div>
+            </td>
+            <td style="border-bottom:0" align="center" colspan="2" class=" bleft">
+              <div> Total de plata </div>
+              <div> (col.5+col.6) </div>
+              <div>  </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom:0;border-top:0" class=""></td>
+            <td colspan="2" style="text-align: center; vertical-align: top;border-top:0" class="bleft">
+              {{pret_cu_tva}}<br />
+              -RON-
+            </td>
+          </tr>
+          <tr>
+            <td height="" style="border-top:0" class=""> &nbsp;</td>
+            <td border="1" colspan="2" class="bleft">&nbsp;</td>
+          </tr>
+          <tr>
+            <td height="" style="border-top:0" class=""> &nbsp;</td>
+            <td border="1" colspan="2" class="bleft">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <p style="margin-top: 10px;">art. 155(6) din Codul Fiscal - semnarea si stampilarea facturilor nu sunt obligatorii</p>
+</div>
+</body>
+</html>

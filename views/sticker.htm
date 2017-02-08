@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            table, th, td {
+                border: 1px;
+                border-collapse: collapse;
+            }
+            th {
+                text-align: left;
+            }
+            .item
+            {
+                padding: 2.5mm ;
+                padding-left:50px;
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+    <body>
+        <table  border="0" cellspacing="0" cellpadding="0" style="width:100%" >
+            {% set tr = 0 %}
+            {% for variation in variations %}
+            {% set tr = tr+1 %}
+            {% if (tr==0) %}
+            <tr >
+                {%endif%}
+                <td class="item"width="33.333%" >
+                    <div style="height:75px; margin-top: 0px " >
+                        <div style="font-size:10px;font-family:monospace;">
+                            {{ variation.uniqueCode }}
+                        </div>
+                        <div style="font-size:10px;font-family:monospace;font-weight:bold ">
+                            {{variation.barcode_product_name}}-{{variation.size.name}}
+                            {% for sex in variation.sex%}-{{sex.shortcode}}{% endfor %}
+                        </div>
+                        <div style="font-size:10px;padding-right: 28px;font-family: monospace; text-align: right;">
+                            <img src="data:image/png;base64,'.{{variation.barcodeImage}}" HEIGHT="20px" width="100%" >
+                            {{variation.barcode}}
+                        </div>
+                        <div style="font-size:10px;font-family:monospace; ">
+                            www.sportmaniac.ro
+                        </div>
+                    </div>
+                </td>       
+                {% if (tr==3) %}
+            <tr>
+                {% set tr = 0 %}
+                {%endif%}
+                {% endfor %}
+        </table>
+
+    </body>
+</html>    
